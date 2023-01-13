@@ -3,7 +3,7 @@
     Change Local User Password
 
 .DESCRIPTION
-    This script demos the following:
+    This script handles printing out local users on the machine, adds new local users, disables local user accounts and updates / creates new passwords for local users:
         1. Prints out Local Users on this PC
         2. Adds a new user to the local users accounts
         3. Update users password
@@ -22,6 +22,7 @@ PS>.\promts.ps1
 .NOTES
     Author: Avi Avila
     Date: 1/07/23
+    v0.1.0
 #>
 
 # Define a function for the menu and user input
@@ -62,8 +63,11 @@ try
      {
          # Prompts the menu and gets the users input
         $userInput = Get-UserInput
+
+        # Gets the local users and stores them in the array variable
         $localUsers = Get-LocalUser
-        $arr = $localUsers | ForEach-Object {"User: [$_],"}
+        # $userList = $localUsers | ForEach-Object {"$_"}
+        $arr = $localUsers | ForEach-Object {"User: [$_]"}
         
         # Switch case statment that runs on the input from the user
         switch ($userInput) 
@@ -72,34 +76,74 @@ try
             1 { 
                 Clear-Host
                 Write-Host -ForegroundColor Yellow $arr
-                Write-Host -ForegroundColor Cyan "Last Option Ran:"$userInput
+                Write-Host -ForegroundColor Cyan "`nLast Option Ran:"$userInput
                 Write-Host -ForegroundColor Cyan "Listed Local Users on this PC.....Complete"
             }
 
             # Option 2: Creates a New Local Account and set password
             2 { 
                 Clear-Host
-                $getFullName = Write-Host "Enter New Persons Full Name"; Read-Host
-                $getAccountName = Write-Host "Enter Account Username"; Read-Host
-                $getDescription = Write-Host "Enter Account Description i.e: Manager, Tech, Dr. Front Desk, Receptionist, etc."; Read-Host 
-                $getPassword = Write-Host "Enter New Password Greater than 10 Characters"; Read-Host -AsSecureString 
-                New-LocalUser $getAccountName -Password $getPassword -FullName $getFullName -Description $getDescription
-                
-                Write-Host -ForegroundColor Cyan "Last Option Ran:"$userInput
-                Write-Host -ForegroundColor Cyan "Created New account for $getFullName.....Complete"
+                Write-Host -ForegroundColor Cyan "Enter Account Username (i.e. jsmith | john.smith | John | Lauren | lsmith | lauren.smith | etc |" 
+                $getAccountName = Read-Host
+
+                $userExists = $false
+
+                foreach ($user in $localUsers) {
+                    if ($user.Name -eq $getAccountName) {
+                        $userExists = $true
+                        break
+                    }
+                }
+
+                if ($userExists) {
+                    Write-Host -ForegroundColor Yellow "User $getAccountName already exists, please press 2 again and try again."
+
+                } else {
+                        Write-Host -ForegroundColor Cyan "Enter New Persons Full Name of the new user $getAccountName"
+                        $getFullName =  Read-Host
+    
+                        Write-Host -ForegroundColor Cyan "Enter Account Description i.e: Account for Manager / Tech / Dr. / Front Desk Receptionist, etc." 
+                        $getDescription = Read-Host 
+    
+                        Write-Host -ForegroundColor Cyan "Enter New Password Greater than 10 Characters, at least 1 uppercase letter and at least 1 symbol" 
+                        $getPassword = Read-Host 
+
+                        if (((($getPassword).Length) -ge 10) -and ($getPassword -match '[A-Z]') -and ($getPassword -match '[!@#$%^&*(),.?":{}|<>]')) {
+                            Write-Host -ForegroundColor Cyan "Your password is strong"
+                            Pause
+
+                            New-LocalUser $getAccountName -Password $getPassword -FullName $getFullName -Description $getDescription
+                            Clear-Host
+                            Write-Host -ForegroundColor Cyan "Last Option Ran: $userInput Add New User"
+                            Write-Host -ForegroundColor Cyan "Created New account for $getFullName.....Complete"
+                        } else {
+
+                            Write-Host -ForegroundColor Yellow "The password you enter is too weak. Please select 2 and try again"
+                        }
+                }
             }
 
             # Option 3: Update Password for a User
             3 { 
                 Clear-Host
                 Write-Host -ForegroundColor Yellow $arr
-                $username = Read-Host "Enter the Username you wish to update / change"
-                $newPassword = Read-Host "Enter New Password Greater than 10 Characters" -AsSecureString
-                Set-LocalUser $username -Password $newPassword
-                Clear-Host
-                Write-Host -ForegroundColor Cyan "Last Option Ran:"$userInput
-                Write-Host -ForegroundColor Cyan "Updated Password for $username.....Complete"
+                Write-Host -ForegroundColor Cyan "Enter the Username you wish to update / change"
+                $username = Read-Host 
 
+                Write-Host -ForegroundColor Cyan "Enter New Password Greater than 10 Characters, at least 1 uppercase letter and at least 1 symbol" 
+                $newPassword = Read-Host
+
+                if (((($newPassword).Length) -ge 10) -and ($newPassword -match '[A-Z]') -and ($newPassword -match '[!@#$%^&*(),.?":{}|<>]')) {
+                    Write-Host -ForegroundColor Cyan "Your password is strong"
+                    Set-LocalUser $username -Password $newPassword
+                    Pause
+
+                    Clear-Host
+                    Write-Host -ForegroundColor Cyan "Last Option Ran: $userInput Update User Password"
+                    Write-Host -ForegroundColor Cyan "Updated Password for $username.....Complete"
+                } else {
+                    Write-Host -ForegroundColor Yellow "The password you enter is too weak. Please select 3 and try again"
+                }
             }
 
             # Option 4: Disables an account for an employee who no longer works in the company
@@ -107,10 +151,10 @@ try
 
                 Clear-Host
                 Write-Host -ForegroundColor Yellow $arr
-                $disableUser = Read-Host "Enter the Username you wish to Disable the account for"
+                $disableUser = Read-Host "`nEnter the Username you wish to Disable the account for"
                 Disable-LocalUser -Name $disableUser
                 Clear-Host
-                Write-Host -ForegroundColor Cyan "Last Option Ran:"$userInput
+                Write-Host -ForegroundColor Cyan "Last Option Ran: $userInput Make User Inactive"
                 Write-Host -ForegroundColor Red "Disabled User $disableUser.....Complete"
             }
 
