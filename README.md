@@ -12,7 +12,7 @@ I did not add a way to remove / delete an account for the purpose of keeping for
 their local profile.
 
 
-# How To / How to Use
+# How to Use
 
 The best way to run this script is to create a shortcut of the file and under the Shortcut tab, click on Advanced
 and select the checkbox Run as Administrator and click ok
