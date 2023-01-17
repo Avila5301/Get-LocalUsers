@@ -55,5 +55,7 @@ To Set your ExecutionPolicy to RemoteSigned enter:
 * LocalMachine
 
 
+You should now be able to double click on the shortcut and run the script as admin. Hope this script is helpful to someone and hope you enjoy it.
+
 # Feedback
 Feedback would greatly be appreciated and welcomed (gentle feedback lol) and also any feature you would like to see me add to it, let me know. 
