@@ -53,3 +53,7 @@ To Set your ExecutionPolicy to RemoteSigned enter:
 * Process
 * CurrentUser
 * LocalMachine
+
+
+# Feedback
+Feedback would greatly be appreciated and welcomed (gentle feedback lol) and also any feature you would like to see me add to it, let me know. 
