@@ -16,6 +16,7 @@ their local profile.
 
 *Do this First*
 > Security: This file came from another computer and might be blocked to help protect this computer
+
 Once you download the zip or clone the repo, you must right-click and select "Unblock" checkbox and hit Apply and OK.
 
 The best way to run this script is to create a shortcut by right clicking and mousing over "Send To" and select Desktop. 
