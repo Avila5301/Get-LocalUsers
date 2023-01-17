@@ -14,17 +14,24 @@ their local profile.
 
 # How to Use
 
-The best way to run this script is to create a shortcut of the file and under the Shortcut tab, click on Advanced
-and select the checkbox Run as Administrator and click ok after you place the following in front of the 
-Target field in the properties of the shortcut.
+The best way to run this script is to create a shortcut by right clicking and mousing over "Send To" and select Desktop. 
+Then right click on the on on the shortcut and select / click on "Properties".
 
-Place this in the Target field so the file will run as a powershell.exe: See example below:
+Place the following in front of the Target field / input field so the file will run as a Powershell.exe file:
 
-`powershell.exe -command "& 'C:\A path with spaces\MyScript.ps1'"`
+`powershell.exe -command "& 'C:\A path with spaces\Get-LocalUser.ps1'"`
+
+or
+
+`powershell.exe -command "& 'C:\A-pathWithNoSpaces\Get-LocalUser.ps1'"`
+
+
+Then, under the Shortcut tab, click on Advanced and select the checkbox "Run as Administrator" and click ok.
 
 If you are a standard user, it will prompt you for admin creds and then launch the script
+If you are an admin, it will prompt you and you can click on Yes
 
-Dont forget to have your CurrentUser Remote Signed for the ExecutionPolicy
+Dont forget to have your CurrentUser RemoteSigned for the ExecutionPolicy
 
 To Check your current ExecutionPolicy enter:
 
@@ -36,8 +43,8 @@ To Set your ExecutionPolicy to RemoteSigned enter:
 
 You can replace CurrentUser with any of the the following:
 
-** MachinePolicy
-** UserPolicy
-** Process
-** CurrentUser
-** LocalMachine
+* MachinePolicy
+* UserPolicy
+* Process
+* CurrentUser
+* LocalMachine
