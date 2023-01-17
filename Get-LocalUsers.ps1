@@ -22,7 +22,7 @@ PS>.\promts.ps1
 .NOTES
     Author: Avi Avila
     Date: 1/07/23
-    v0.1.0
+    v1.1.0
 #>
 
 # Define a function for the menu and user input
@@ -66,8 +66,9 @@ try
 
         # Gets the local users and stores them in the array variable
         $localUsers = Get-LocalUser
-        # $userList = $localUsers | ForEach-Object {"$_"}
-        $arr = $localUsers | ForEach-Object {"User: [$_]"}
+
+        # Takes an array and adds User: [] to help define each user
+        $userList = $localUsers | ForEach-Object {"User: [$_]"}
         
         # Switch case statment that runs on the input from the user
         switch ($userInput) 
@@ -75,7 +76,7 @@ try
             # Option 1: Displays all accounts on the local machine in yellow
             1 { 
                 Clear-Host
-                Write-Host -ForegroundColor Yellow $arr
+                Write-Host -ForegroundColor Yellow $userList
                 Write-Host -ForegroundColor Cyan "`nLast Option Ran:"$userInput
                 Write-Host -ForegroundColor Cyan "Listed Local Users on this PC.....Complete"
             }
@@ -106,9 +107,12 @@ try
                         $getDescription = Read-Host 
     
                         Write-Host -ForegroundColor Cyan "Enter New Password Greater than 10 Characters, at least 1 uppercase letter and at least 1 symbol" 
-                        $getPassword = Read-Host 
+                        $getPassword = Read-Host -AsSecureString
+                        $pwIntPtr = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($newPassword)
+                        $pwInPlain = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($pwIntPtr) 
+                                     [System.Runtime.InteropServices.Marshal]::ZeroFreeBSTR($pwIntPtr)
 
-                        if (((($getPassword).Length) -ge 10) -and ($getPassword -match '[A-Z]') -and ($getPassword -match '[!@#$%^&*(),.?":{}|<>]')) {
+                        if (((($pwInPlain).Length) -ge 10) -and ($pwInPlain -match '[A-Z]') -and ($pwInPlain -match '[!@#$%^&*(),.?":{}|<>]')) {
                             Write-Host -ForegroundColor Cyan "Your password is strong"
                             Pause
 
@@ -126,16 +130,20 @@ try
             # Option 3: Update Password for a User
             3 { 
                 Clear-Host
-                Write-Host -ForegroundColor Yellow $arr
+                Write-Host -ForegroundColor Yellow $userList
                 Write-Host -ForegroundColor Cyan "Enter the Username you wish to update / change"
                 $username = Read-Host 
 
                 Write-Host -ForegroundColor Cyan "Enter New Password Greater than 10 Characters, at least 1 uppercase letter and at least 1 symbol" 
-                $newPassword = Read-Host
+                $newPassword = Read-Host -AsSecureString
+                $pwIntPtr = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($newPassword)
+                $pwInPlain = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($pwIntPtr) 
+                             [System.Runtime.InteropServices.Marshal]::ZeroFreeBSTR($pwIntPtr)
+                
 
-                if (((($newPassword).Length) -ge 10) -and ($newPassword -match '[A-Z]') -and ($newPassword -match '[!@#$%^&*(),.?":{}|<>]')) {
+                if (((($pwInPlain).Length) -ge 10) -and ($pwInPlain -match '[A-Z]') -and ($pwInPlain -match '[!@#$%^&*(),.?":{}|<>]')) {
                     Write-Host -ForegroundColor Cyan "Your password is strong"
-                    Set-LocalUser $username -Password $newPassword
+                    Set-LocalUser $username -Password $newPassword 
                     Pause
 
                     Clear-Host
@@ -150,7 +158,7 @@ try
             4 { 
 
                 Clear-Host
-                Write-Host -ForegroundColor Yellow $arr
+                Write-Host -ForegroundColor Yellow $userList
                 $disableUser = Read-Host "`nEnter the Username you wish to Disable the account for"
                 Disable-LocalUser -Name $disableUser
                 Clear-Host
@@ -186,7 +194,5 @@ Catch
     }
 finally 
     {
-        # Close any open resources
-        # Runs before the scrips ends
-        # Only included for completness of the Try Catch block and my reference
+
     }

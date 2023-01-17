@@ -15,10 +15,29 @@ their local profile.
 # How To / How to Use
 
 The best way to run this script is to create a shortcut of the file and under the Shortcut tab, click on Advanced
-and select the checkbox Run as Administrator and click ok
+and select the checkbox Run as Administrator and click ok after you place the following in front of the 
+Target field in the properties of the shortcut.
 
-Place this in the Target so the file will run as a powershell exe. See example below:
+Place this in the Target field so the file will run as a powershell.exe: See example below:
 
 `powershell.exe -command "& 'C:\A path with spaces\MyScript.ps1'"`
 
 If you are a standard user, it will prompt you for admin creds and then launch the script
+
+Dont forget to have your CurrentUser Remote Signed for the ExecutionPolicy
+
+To Check your current ExecutionPolicy enter:
+
+`Get-ExecutionPolicy -List`
+
+To Set your ExecutionPolicy to RemoteSigned enter:
+
+`Set-ExecutionPolicy -ExecutionPlicy RemoteSigned -Scope CurrentUser`
+
+You can replace CurrentUser with any of the the following:
+
+** MachinePolicy
+** UserPolicy
+** Process
+** CurrentUser
+** LocalMachine
